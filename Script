@@ -82,6 +82,16 @@ local scripts = {
         url = "https://rawscripts.net/raw/Universal-Script-inf-health-102308"
     },
 
+    {
+        name = "Animal Hospital",
+        url = "https://raw.githubusercontent.com/caomod2077/Script/main/FN_AnimalHospital.lua"
+    },
+
+    {
+        name = "",
+        url = "https://rawscripts.net/raw/Universal-Script-Tptool-107347"
+    },
+
     --// =====================================
     --// SCRIPTS ADICIONALES
     --// =====================================
