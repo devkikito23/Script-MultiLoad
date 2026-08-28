@@ -1,0 +1,23 @@
+local scripts = {
+    "https://rawscripts.net/raw/Universal-Script-PlayerTools-239952",
+    "https://rawscripts.net/raw/Natural-Disaster-Survival-super-ring-parts-open-source-NO-TEXT-CHAT-MESSAGE-212258",
+    "https://rawscripts.net/raw/Universal-Script-inf-health-102308",
+    -- "https://rawscripts.net/raw/Universal-Script-Tptool-107347",
+    -- "https://raw.githubusercontent.com/usuario/repo/main/script.lua",
+}
+
+for i, url in ipairs(scripts) do
+    task.spawn(function()
+        local success, err = pcall(function()
+            loadstring(game:HttpGet(url))()
+        end)
+        
+        if success then
+            print("[+] Script cargado:", url)
+        else
+            warn("[-] Error al cargar:", url, err)
+        end
+    end)
+end
+
+print("Todos los scripts se están ejecutando...")
