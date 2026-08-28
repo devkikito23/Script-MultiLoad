@@ -21,18 +21,16 @@ local GUI_NAME = "PurpleScriptLoader"
 --// =========================================
 --// ICONOS
 --// =========================================
---
---// Main   = Logo Roblox dentro del menú
---// Open   = Icono Click/Ojo minimizado
---// Button = Libro de los botones
---
 
 local MENU_ICONS = {
 
+    --// Logo dentro del menú
     Main = "rbxassetid://1847190162",
 
+    --// Logo cuando está minimizado
     Open = "rbxassetid://17293879614",
 
+    --// Logo de los botones
     Button = "rbxassetid://127110909372919"
 
 }
@@ -162,7 +160,9 @@ end
 local ScreenGui = Instance.new("ScreenGui")
 
 ScreenGui.Name = GUI_NAME
+
 ScreenGui.ResetOnSpawn = false
+
 ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 
 ScreenGui.Parent = playerGui
@@ -197,8 +197,6 @@ Main.BorderSizePixel = 0
 Main.Parent = ScreenGui
 
 
---// BORDES REDONDEADOS
-
 local MainCorner = Instance.new("UICorner")
 
 MainCorner.CornerRadius = UDim.new(
@@ -208,8 +206,6 @@ MainCorner.CornerRadius = UDim.new(
 
 MainCorner.Parent = Main
 
-
---// BORDE MORADO
 
 local MainStroke = Instance.new("UIStroke")
 
@@ -255,7 +251,7 @@ TopCorner.Parent = TopBar
 
 
 --// =========================================
---// LOGO ROBLOX 🔴
+--// LOGO ROBLOX
 --// =========================================
 
 local Logo = Instance.new("ImageLabel")
@@ -553,8 +549,6 @@ for index, data in ipairs(scripts) do
     Button.Parent = Scroll
 
 
-    --// BORDES REDONDEADOS
-
     local Corner = Instance.new("UICorner")
 
     Corner.CornerRadius = UDim.new(
@@ -564,8 +558,6 @@ for index, data in ipairs(scripts) do
 
     Corner.Parent = Button
 
-
-    --// BORDE MORADO
 
     local Stroke = Instance.new("UIStroke")
 
@@ -579,7 +571,7 @@ for index, data in ipairs(scripts) do
 
 
     --// =====================================
-    --// ICONO LIBRO 📖
+    --// ICONO LIBRO
     --// =====================================
 
     local Icon = Instance.new("ImageLabel")
@@ -720,7 +712,7 @@ end
 
 
 --// =========================================
---// ACTUALIZAR SCROLL
+--// SCROLL
 --// =========================================
 
 local function UpdateCanvas()
@@ -745,7 +737,7 @@ UpdateCanvas()
 
 
 --// =========================================
---// BOTÓN MINIMIZADO 👁️
+--// BOTÓN MINIMIZADO
 --// =========================================
 
 local OpenButton = Instance.new("ImageButton")
@@ -758,6 +750,9 @@ OpenButton.Size = UDim2.new(
     0,
     58
 )
+
+
+--// Posición inicial del ojo
 
 OpenButton.Position = UDim2.new(
     0.5,
@@ -781,8 +776,6 @@ OpenButton.AutoButtonColor = false
 OpenButton.Parent = ScreenGui
 
 
---// BORDE DEL BOTÓN
-
 local OpenStroke = Instance.new("UIStroke")
 
 OpenStroke.Thickness = 2
@@ -793,8 +786,6 @@ OpenStroke.Transparency = 0.1
 
 OpenStroke.Parent = OpenButton
 
-
---// REDONDEADO
 
 local OpenCorner = Instance.new("UICorner")
 
@@ -807,29 +798,36 @@ OpenCorner.Parent = OpenButton
 
 
 --// =========================================
---// HOVER OJO
+--// MEMORIA DE POSICIONES
 --// =========================================
 
-OpenButton.MouseEnter:Connect(function()
-
-    OpenButton.BackgroundColor3 = COLORS.ButtonHover
-
-    OpenStroke.Color = COLORS.PurpleLight
-
-end)
+local minimized = false
 
 
-OpenButton.MouseLeave:Connect(function()
+--// Posición actual del menú
 
-    OpenButton.BackgroundColor3 = COLORS.Background2
-
-    OpenStroke.Color = COLORS.Purple
-
-end)
+local savedMainPosition = Main.Position
 
 
 --// =========================================
---// DRAG DEL MENÚ NORMAL
+--// POSICIÓN DEL OJO
+--// =========================================
+--
+--// IMPORTANTE:
+--// Esta posición se guarda INDEPENDIENTEMENTE
+--// de la posición del menú.
+--//
+
+local savedOpenPosition = OpenButton.Position
+
+
+--// Indica si el usuario ya movió el ojo
+
+local openHasBeenMoved = false
+
+
+--// =========================================
+--// DRAG DEL MENÚ
 --// =========================================
 
 local draggingMain = false
@@ -839,16 +837,34 @@ local dragStartMain
 local startPositionMain
 
 
+local function StartMainDrag(input)
+
+    draggingMain = true
+
+    dragStartMain = input.Position
+
+    startPositionMain = Main.Position
+
+end
+
+
+local function StopMainDrag()
+
+    draggingMain = false
+
+end
+
+
+--// =========================================
+--// DRAG DESDE TOP BAR
+--// =========================================
+
 TopBar.InputBegan:Connect(function(input)
 
     if input.UserInputType == Enum.UserInputType.MouseButton1
         or input.UserInputType == Enum.UserInputType.Touch then
 
-        draggingMain = true
-
-        dragStartMain = input.Position
-
-        startPositionMain = Main.Position
+        StartMainDrag(input)
 
     end
 
@@ -860,23 +876,153 @@ TopBar.InputEnded:Connect(function(input)
     if input.UserInputType == Enum.UserInputType.MouseButton1
         or input.UserInputType == Enum.UserInputType.Touch then
 
-        draggingMain = false
+        StopMainDrag()
 
     end
 
 end)
 
 
+--// =========================================
+--// ZONA INFERIOR IZQUIERDA
+--// =========================================
+
+local BottomLeftDrag = Instance.new("TextButton")
+
+BottomLeftDrag.Name = "BottomLeftDrag"
+
+BottomLeftDrag.Size = UDim2.new(
+    0,
+    75,
+    0,
+    35
+)
+
+BottomLeftDrag.Position = UDim2.new(
+    0,
+    0,
+    1,
+    -35
+)
+
+BottomLeftDrag.BackgroundTransparency = 1
+
+BottomLeftDrag.Text = ""
+
+BottomLeftDrag.AutoButtonColor = false
+
+BottomLeftDrag.ZIndex = 20
+
+BottomLeftDrag.Parent = Main
+
+
+--// =========================================
+--// ZONA INFERIOR DERECHA
+--// =========================================
+
+local BottomRightDrag = Instance.new("TextButton")
+
+BottomRightDrag.Name = "BottomRightDrag"
+
+BottomRightDrag.Size = UDim2.new(
+    0,
+    75,
+    0,
+    35
+)
+
+BottomRightDrag.Position = UDim2.new(
+    1,
+    -75,
+    1,
+    -35
+)
+
+BottomRightDrag.BackgroundTransparency = 1
+
+BottomRightDrag.Text = ""
+
+BottomRightDrag.AutoButtonColor = false
+
+BottomRightDrag.ZIndex = 20
+
+BottomRightDrag.Parent = Main
+
+
+--// =========================================
+--// DRAG INFERIOR IZQUIERDA
+--// =========================================
+
+BottomLeftDrag.InputBegan:Connect(function(input)
+
+    if input.UserInputType == Enum.UserInputType.MouseButton1
+        or input.UserInputType == Enum.UserInputType.Touch then
+
+        StartMainDrag(input)
+
+    end
+
+end)
+
+
+BottomLeftDrag.InputEnded:Connect(function(input)
+
+    if input.UserInputType == Enum.UserInputType.MouseButton1
+        or input.UserInputType == Enum.UserInputType.Touch then
+
+        StopMainDrag()
+
+    end
+
+end)
+
+
+--// =========================================
+--// DRAG INFERIOR DERECHA
+--// =========================================
+
+BottomRightDrag.InputBegan:Connect(function(input)
+
+    if input.UserInputType == Enum.UserInputType.MouseButton1
+        or input.UserInputType == Enum.UserInputType.Touch then
+
+        StartMainDrag(input)
+
+    end
+
+end)
+
+
+BottomRightDrag.InputEnded:Connect(function(input)
+
+    if input.UserInputType == Enum.UserInputType.MouseButton1
+        or input.UserInputType == Enum.UserInputType.Touch then
+
+        StopMainDrag()
+
+    end
+
+end)
+
+
+--// =========================================
+--// MOVIMIENTO DEL MENÚ
+--// =========================================
+
 UserInputService.InputChanged:Connect(function(input)
 
     if not draggingMain then
+
         return
+
     end
+
 
     if input.UserInputType == Enum.UserInputType.MouseMovement
         or input.UserInputType == Enum.UserInputType.Touch then
 
         local delta = input.Position - dragStartMain
+
 
         Main.Position = UDim2.new(
 
@@ -890,13 +1036,18 @@ UserInputService.InputChanged:Connect(function(input)
 
         )
 
+
+        --// GUARDAR POSICIÓN DEL MENÚ
+
+        savedMainPosition = Main.Position
+
     end
 
 end)
 
 
 --// =========================================
---// DRAG DEL OJO MINIMIZADO
+--// DRAG DEL OJO
 --// =========================================
 
 local draggingOpen = false
@@ -905,6 +1056,8 @@ local dragStartOpen
 
 local startPositionOpen
 
+local openMoved = false
+
 
 OpenButton.InputBegan:Connect(function(input)
 
@@ -912,6 +1065,8 @@ OpenButton.InputBegan:Connect(function(input)
         or input.UserInputType == Enum.UserInputType.Touch then
 
         draggingOpen = true
+
+        openMoved = false
 
         dragStartOpen = input.Position
 
@@ -937,13 +1092,29 @@ end)
 UserInputService.InputChanged:Connect(function(input)
 
     if not draggingOpen then
+
         return
+
     end
+
 
     if input.UserInputType == Enum.UserInputType.MouseMovement
         or input.UserInputType == Enum.UserInputType.Touch then
 
         local delta = input.Position - dragStartOpen
+
+
+        --// Detectar movimiento real
+
+        if math.abs(delta.X) > 5
+            or math.abs(delta.Y) > 5 then
+
+            openMoved = true
+
+            openHasBeenMoved = true
+
+        end
+
 
         OpenButton.Position = UDim2.new(
 
@@ -957,6 +1128,13 @@ UserInputService.InputChanged:Connect(function(input)
 
         )
 
+
+        --// =====================================
+        --// GUARDAR POSICIÓN DEL OJO
+        --// =====================================
+
+        savedOpenPosition = OpenButton.Position
+
     end
 
 end)
@@ -966,27 +1144,56 @@ end)
 --// MINIMIZAR
 --// =========================================
 
-local minimized = false
-
-
 Minimize.MouseButton1Click:Connect(function()
+
+    if minimized then
+
+        return
+
+    end
+
 
     minimized = true
 
-    --// Guardar posición actual del menú
-    --// para colocar el ojo exactamente ahí.
 
-    OpenButton.Position = UDim2.new(
+    --// =====================================
+    --// GUARDAR POSICIÓN DEL MENÚ
+    --// =====================================
 
-        Main.Position.X.Scale,
+    savedMainPosition = Main.Position
 
-        Main.Position.X.Offset + (Main.AbsoluteSize.X / 2) - 29,
 
-        Main.Position.Y.Scale,
+    --// =====================================
+    --// PRIMERA VEZ
+    --// =====================================
+    --
+    --// Si nunca moviste el ojo, aparece
+    --// centrado sobre el menú.
+    --
+    --// Después de moverlo, SIEMPRE conserva
+    --// su propia posición.
+    --
 
-        Main.Position.Y.Offset + (Main.AbsoluteSize.Y / 2) - 29
+    if not openHasBeenMoved then
 
-    )
+        savedOpenPosition = UDim2.new(
+
+            savedMainPosition.X.Scale,
+
+            savedMainPosition.X.Offset + 131,
+
+            savedMainPosition.Y.Scale,
+
+            savedMainPosition.Y.Offset + 171
+
+        )
+
+    end
+
+
+    --// Colocar el ojo en su posición guardada
+
+    OpenButton.Position = savedOpenPosition
 
 
     Main.Visible = false
@@ -1002,28 +1209,56 @@ end)
 
 OpenButton.MouseButton1Click:Connect(function()
 
+    --// Si acabamos de arrastrarlo,
+    --// no abrir accidentalmente.
+
+    if openMoved then
+
+        openMoved = false
+
+        return
+
+    end
+
+
     minimized = false
 
 
-    --// Colocar el menú alrededor
-    --// de la posición del ojo.
+    --// Guardar su posición actual
 
-    Main.Position = UDim2.new(
+    savedOpenPosition = OpenButton.Position
 
-        OpenButton.Position.X.Scale,
 
-        OpenButton.Position.X.Offset + 29 - 160,
+    --// Restaurar el menú donde estaba
 
-        OpenButton.Position.Y.Scale,
-
-        OpenButton.Position.Y.Offset + 29 - 200
-
-    )
+    Main.Position = savedMainPosition
 
 
     Main.Visible = true
 
     OpenButton.Visible = false
+
+end)
+
+
+--// =========================================
+--// HOVER DEL OJO
+--// =========================================
+
+OpenButton.MouseEnter:Connect(function()
+
+    OpenButton.BackgroundColor3 = COLORS.ButtonHover
+
+    OpenStroke.Color = COLORS.PurpleLight
+
+end)
+
+
+OpenButton.MouseLeave:Connect(function()
+
+    OpenButton.BackgroundColor3 = COLORS.Background2
+
+    OpenStroke.Color = COLORS.Purple
 
 end)
 
@@ -1039,3 +1274,9 @@ print("[+] Roblox Logo:", MENU_ICONS.Main)
 print("[+] Open Icon:", MENU_ICONS.Open)
 
 print("[+] Button Icon:", MENU_ICONS.Button)
+
+print("[+] Menu drag: TOP + BOTTOM CORNERS")
+
+print("[+] Main position memory: ENABLED")
+
+print("[+] Open button position memory: ENABLED")
