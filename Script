@@ -1,8 +1,74 @@
 --// =========================================
 --//        MULTI SCRIPT LOADER GUI
+--//        PURPLE EDITION
+--//        ICON EDITION
+--// =========================================
+
+local Players = game:GetService("Players")
+local UserInputService = game:GetService("UserInputService")
+
+local player = Players.LocalPlayer
+local playerGui = player:WaitForChild("PlayerGui")
+
+
+--// =========================================
+--// CONFIGURACIÓN
+--// =========================================
+
+local GUI_NAME = "PurpleScriptLoader"
+
+
+--// =========================================
+--// ICONOS
+--// =========================================
+--
+--// Main   = Logo Roblox dentro del menú
+--// Open   = Icono Click/Ojo minimizado
+--// Button = Libro de los botones
+--
+
+local MENU_ICONS = {
+
+    Main = "rbxassetid://1847190162",
+
+    Open = "rbxassetid://17293879614",
+
+    Button = "rbxassetid://127110909372919"
+
+}
+
+
+--// =========================================
+--// COLORES
+--// =========================================
+
+local COLORS = {
+
+    Background = Color3.fromRGB(14, 10, 22),
+    Background2 = Color3.fromRGB(22, 15, 34),
+
+    Purple = Color3.fromRGB(145, 70, 255),
+    PurpleDark = Color3.fromRGB(85, 35, 145),
+    PurpleLight = Color3.fromRGB(190, 120, 255),
+
+    Button = Color3.fromRGB(35, 23, 50),
+    ButtonHover = Color3.fromRGB(55, 32, 75),
+
+    Text = Color3.fromRGB(255, 255, 255),
+    SubText = Color3.fromRGB(175, 160, 190),
+
+    Success = Color3.fromRGB(100, 255, 160),
+    Error = Color3.fromRGB(255, 90, 110)
+
+}
+
+
+--// =========================================
+--// SCRIPTS
 --// =========================================
 
 local scripts = {
+
     {
         name = "PlayerTools",
         url = "https://rawscripts.net/raw/Universal-Script-PlayerTools-239952"
@@ -19,45 +85,14 @@ local scripts = {
     },
 
     --// =====================================
-    --//        AGREGA MÁS SCRIPTS AQUÍ
+    --// SCRIPTS ADICIONALES
     --// =====================================
 
     -- {
     --     name = "Mi Script 4",
-    --     url = "https://rawscripts.net/raw/otro-script"
+    --     url = "https://ejemplo.com/script.lua"
     -- },
 
-    -- {
-    --     name = "Mi Script 5",
-    --     url = "https://rawscripts.net/raw/otro-script"
-    -- },
-
-    -- {
-    --     name = "Mi Script 6",
-    --     url = "https://rawscripts.net/raw/otro-script"
-    -- },
-
-    -- {
-    --     name = "Mi Script 7",
-    --     url = "https://rawscripts.net/raw/otro-script"
-    -- },
-
-    -- {
-    --     name = "Mi Script 8",
-    --     url = "https://rawscripts.net/raw/otro-script"
-    -- },
-
-    -- {
-    --     name = "Mi Script 9",
-    --     url = "https://rawscripts.net/raw/otro-script"
-    -- },
-
-    -- {
-    --     name = "Mi Script 10",
-    --     url = "https://rawscripts.net/raw/otro-script"
-    -- },
-
-    --// Puedes seguir agregando cuantos quieras.
 }
 
 
@@ -66,162 +101,432 @@ local scripts = {
 --// =========================================
 
 local function loadScript(url)
+
     local success, result = pcall(function()
+
         return game:HttpGet(url)
+
     end)
+
 
     if not success or not result or result == "" then
-        warn("[-] No se pudo descargar:", url)
+
+        warn("[-] Error descargando:", url)
+
         return false
+
     end
 
-    local loadSuccess, err = pcall(function()
+
+    local executeSuccess, err = pcall(function()
+
         loadstring(result)()
+
     end)
 
-    if loadSuccess then
-        print("[+] Script ejecutado:", url)
+
+    if executeSuccess then
+
+        print("[+] Ejecutado:", url)
+
         return true
+
     else
-        warn("[-] Error al ejecutar:", err)
+
+        warn("[-] Error ejecutando:", err)
+
         return false
+
     end
+
 end
 
 
 --// =========================================
---// GUI
+--// BORRAR GUI ANTERIOR
 --// =========================================
 
-local Players = game:GetService("Players")
-local UserInputService = game:GetService("UserInputService")
-
-local player = Players.LocalPlayer
-local playerGui = player:WaitForChild("PlayerGui")
-
-
---// Evitar duplicados
-local oldGui = playerGui:FindFirstChild("MultiScriptLoader")
+local oldGui = playerGui:FindFirstChild(GUI_NAME)
 
 if oldGui then
+
     oldGui:Destroy()
+
 end
 
 
+--// =========================================
+--// SCREEN GUI
+--// =========================================
+
 local ScreenGui = Instance.new("ScreenGui")
-ScreenGui.Name = "MultiScriptLoader"
+
+ScreenGui.Name = GUI_NAME
 ScreenGui.ResetOnSpawn = false
+ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+
 ScreenGui.Parent = playerGui
 
 
 --// =========================================
---// MAIN WINDOW
+--// MAIN FRAME
 --// =========================================
 
 local Main = Instance.new("Frame")
+
 Main.Name = "Main"
-Main.Size = UDim2.new(0, 300, 0, 400)
-Main.Position = UDim2.new(0.5, -150, 0.5, -200)
-Main.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+
+Main.Size = UDim2.new(
+    0,
+    320,
+    0,
+    400
+)
+
+Main.Position = UDim2.new(
+    0.5,
+    -160,
+    0.5,
+    -200
+)
+
+Main.BackgroundColor3 = COLORS.Background
+
 Main.BorderSizePixel = 0
+
 Main.Parent = ScreenGui
 
-local Corner = Instance.new("UICorner")
-Corner.CornerRadius = UDim.new(0, 10)
-Corner.Parent = Main
+
+--// BORDES REDONDEADOS
+
+local MainCorner = Instance.new("UICorner")
+
+MainCorner.CornerRadius = UDim.new(
+    0,
+    18
+)
+
+MainCorner.Parent = Main
+
+
+--// BORDE MORADO
+
+local MainStroke = Instance.new("UIStroke")
+
+MainStroke.Thickness = 2
+
+MainStroke.Color = COLORS.Purple
+
+MainStroke.Transparency = 0.15
+
+MainStroke.Parent = Main
 
 
 --// =========================================
---// TITLE BAR
+--// TOP BAR
 --// =========================================
 
 local TopBar = Instance.new("Frame")
-TopBar.Size = UDim2.new(1, 0, 0, 40)
-TopBar.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+
+TopBar.Name = "TopBar"
+
+TopBar.Size = UDim2.new(
+    1,
+    0,
+    0,
+    55
+)
+
+TopBar.BackgroundColor3 = COLORS.Background2
+
 TopBar.BorderSizePixel = 0
+
 TopBar.Parent = Main
 
 
+local TopCorner = Instance.new("UICorner")
+
+TopCorner.CornerRadius = UDim.new(
+    0,
+    18
+)
+
+TopCorner.Parent = TopBar
+
+
+--// =========================================
+--// LOGO ROBLOX 🔴
+--// =========================================
+
+local Logo = Instance.new("ImageLabel")
+
+Logo.Name = "RobloxLogo"
+
+Logo.Size = UDim2.new(
+    0,
+    35,
+    0,
+    35
+)
+
+Logo.Position = UDim2.new(
+    0,
+    10,
+    0,
+    10
+)
+
+Logo.BackgroundTransparency = 1
+
+Logo.Image = MENU_ICONS.Main
+
+Logo.ScaleType = Enum.ScaleType.Fit
+
+Logo.Parent = TopBar
+
+
+--// =========================================
+--// TITLE
+--// =========================================
+
 local Title = Instance.new("TextLabel")
-Title.Size = UDim2.new(1, -80, 1, 0)
-Title.Position = UDim2.new(0, 12, 0, 0)
+
+Title.Size = UDim2.new(
+    1,
+    -125,
+    0,
+    25
+)
+
+Title.Position = UDim2.new(
+    0,
+    52,
+    0,
+    7
+)
+
 Title.BackgroundTransparency = 1
-Title.Text = "✦ Multi Script Loader"
-Title.TextColor3 = Color3.fromRGB(255, 255, 255)
-Title.TextSize = 17
+
+Title.Text = "Multi Script Loader"
+
+Title.TextColor3 = COLORS.Text
+
+Title.TextSize = 16
+
 Title.Font = Enum.Font.GothamBold
+
 Title.TextXAlignment = Enum.TextXAlignment.Left
+
 Title.Parent = TopBar
 
 
+local Subtitle = Instance.new("TextLabel")
+
+Subtitle.Size = UDim2.new(
+    1,
+    -125,
+    0,
+    20
+)
+
+Subtitle.Position = UDim2.new(
+    0,
+    52,
+    0,
+    29
+)
+
+Subtitle.BackgroundTransparency = 1
+
+Subtitle.Text = "Select a script to execute"
+
+Subtitle.TextColor3 = COLORS.SubText
+
+Subtitle.TextSize = 10
+
+Subtitle.Font = Enum.Font.Gotham
+
+Subtitle.TextXAlignment = Enum.TextXAlignment.Left
+
+Subtitle.Parent = TopBar
+
+
 --// =========================================
---// MINIMIZE BUTTON
+--// MINIMIZE
 --// =========================================
 
 local Minimize = Instance.new("TextButton")
-Minimize.Size = UDim2.new(0, 35, 0, 30)
-Minimize.Position = UDim2.new(1, -75, 0, 5)
-Minimize.BackgroundColor3 = Color3.fromRGB(55, 55, 55)
+
+Minimize.Name = "Minimize"
+
+Minimize.Size = UDim2.new(
+    0,
+    32,
+    0,
+    32
+)
+
+Minimize.Position = UDim2.new(
+    1,
+    -72,
+    0,
+    11
+)
+
+Minimize.BackgroundColor3 = COLORS.Button
+
+Minimize.BorderSizePixel = 0
+
 Minimize.Text = "—"
-Minimize.TextColor3 = Color3.fromRGB(255, 255, 255)
+
+Minimize.TextColor3 = COLORS.PurpleLight
+
 Minimize.TextSize = 18
+
 Minimize.Font = Enum.Font.GothamBold
+
 Minimize.Parent = TopBar
 
+
 local MinCorner = Instance.new("UICorner")
-MinCorner.CornerRadius = UDim.new(0, 6)
+
+MinCorner.CornerRadius = UDim.new(
+    0,
+    10
+)
+
 MinCorner.Parent = Minimize
 
 
 --// =========================================
---// CLOSE BUTTON
+--// CLOSE
 --// =========================================
 
 local Close = Instance.new("TextButton")
-Close.Size = UDim2.new(0, 35, 0, 30)
-Close.Position = UDim2.new(1, -38, 0, 5)
-Close.BackgroundColor3 = Color3.fromRGB(55, 55, 55)
+
+Close.Name = "Close"
+
+Close.Size = UDim2.new(
+    0,
+    32,
+    0,
+    32
+)
+
+Close.Position = UDim2.new(
+    1,
+    -36,
+    0,
+    11
+)
+
+Close.BackgroundColor3 = COLORS.Button
+
+Close.BorderSizePixel = 0
+
 Close.Text = "×"
-Close.TextColor3 = Color3.fromRGB(255, 255, 255)
+
+Close.TextColor3 = Color3.fromRGB(
+    255,
+    100,
+    150
+)
+
 Close.TextSize = 20
+
 Close.Font = Enum.Font.GothamBold
+
 Close.Parent = TopBar
 
+
 local CloseCorner = Instance.new("UICorner")
-CloseCorner.CornerRadius = UDim.new(0, 6)
+
+CloseCorner.CornerRadius = UDim.new(
+    0,
+    10
+)
+
 CloseCorner.Parent = Close
 
 
+Close.MouseButton1Click:Connect(function()
+
+    ScreenGui:Destroy()
+
+end)
+
+
 --// =========================================
---// SCROLLING FRAME
+--// SCRIPT LIST
 --// =========================================
 
 local Scroll = Instance.new("ScrollingFrame")
-Scroll.Name = "Scripts"
-Scroll.Size = UDim2.new(1, -20, 1, -55)
-Scroll.Position = UDim2.new(0, 10, 0, 48)
+
+Scroll.Name = "ScriptList"
+
+Scroll.Size = UDim2.new(
+    1,
+    -20,
+    1,
+    -70
+)
+
+Scroll.Position = UDim2.new(
+    0,
+    10,
+    0,
+    65
+)
+
 Scroll.BackgroundTransparency = 1
+
 Scroll.BorderSizePixel = 0
-Scroll.ScrollBarThickness = 5
-Scroll.CanvasSize = UDim2.new(0, 0, 0, 0)
+
+Scroll.ScrollBarThickness = 4
+
+Scroll.ScrollBarImageColor3 = COLORS.Purple
+
+Scroll.CanvasSize = UDim2.new(
+    0,
+    0,
+    0,
+    0
+)
+
 Scroll.Parent = Main
 
 
 local Layout = Instance.new("UIListLayout")
-Layout.Padding = UDim.new(0, 8)
+
+Layout.Padding = UDim.new(
+    0,
+    9
+)
+
 Layout.HorizontalAlignment = Enum.HorizontalAlignment.Center
+
 Layout.SortOrder = Enum.SortOrder.LayoutOrder
+
 Layout.Parent = Scroll
 
 
 local Padding = Instance.new("UIPadding")
-Padding.PaddingTop = UDim.new(0, 5)
-Padding.PaddingBottom = UDim.new(0, 10)
+
+Padding.PaddingTop = UDim.new(
+    0,
+    5
+)
+
+Padding.PaddingBottom = UDim.new(
+    0,
+    10
+)
+
 Padding.Parent = Scroll
 
 
 --// =========================================
---// CREATE BUTTONS
+--// CREAR BOTONES
 --// =========================================
 
 for index, data in ipairs(scripts) do
@@ -229,49 +534,182 @@ for index, data in ipairs(scripts) do
     local Button = Instance.new("TextButton")
 
     Button.Name = "Script_" .. index
-    Button.Size = UDim2.new(1, -10, 0, 42)
 
-    Button.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
+    Button.Size = UDim2.new(
+        1,
+        -10,
+        0,
+        48
+    )
 
-    Button.Text = "▶  " .. data.name
+    Button.BackgroundColor3 = COLORS.Button
 
-    Button.TextColor3 = Color3.fromRGB(255, 255, 255)
+    Button.BorderSizePixel = 0
 
-    Button.TextSize = 14
+    Button.Text = ""
 
-    Button.Font = Enum.Font.Gotham
-
-    Button.AutoButtonColor = true
+    Button.AutoButtonColor = false
 
     Button.Parent = Scroll
 
 
-    local ButtonCorner = Instance.new("UICorner")
-    ButtonCorner.CornerRadius = UDim.new(0, 7)
-    ButtonCorner.Parent = Button
+    --// BORDES REDONDEADOS
+
+    local Corner = Instance.new("UICorner")
+
+    Corner.CornerRadius = UDim.new(
+        0,
+        12
+    )
+
+    Corner.Parent = Button
 
 
-    --// Ejecutar al tocar
+    --// BORDE MORADO
+
+    local Stroke = Instance.new("UIStroke")
+
+    Stroke.Thickness = 1
+
+    Stroke.Color = COLORS.PurpleDark
+
+    Stroke.Transparency = 0.3
+
+    Stroke.Parent = Button
+
+
+    --// =====================================
+    --// ICONO LIBRO 📖
+    --// =====================================
+
+    local Icon = Instance.new("ImageLabel")
+
+    Icon.Name = "BookIcon"
+
+    Icon.Size = UDim2.new(
+        0,
+        30,
+        0,
+        30
+    )
+
+    Icon.Position = UDim2.new(
+        0,
+        10,
+        0.5,
+        -15
+    )
+
+    Icon.BackgroundTransparency = 1
+
+    Icon.Image = MENU_ICONS.Button
+
+    Icon.ScaleType = Enum.ScaleType.Fit
+
+    Icon.Parent = Button
+
+
+    --// =====================================
+    --// NOMBRE
+    --// =====================================
+
+    local Name = Instance.new("TextLabel")
+
+    Name.Size = UDim2.new(
+        1,
+        -55,
+        1,
+        0
+    )
+
+    Name.Position = UDim2.new(
+        0,
+        48,
+        0,
+        0
+    )
+
+    Name.BackgroundTransparency = 1
+
+    Name.Text = data.name
+
+    Name.TextColor3 = COLORS.Text
+
+    Name.TextSize = 13
+
+    Name.Font = Enum.Font.GothamSemibold
+
+    Name.TextXAlignment = Enum.TextXAlignment.Left
+
+    Name.Parent = Button
+
+
+    --// =====================================
+    --// HOVER
+    --// =====================================
+
+    Button.MouseEnter:Connect(function()
+
+        Button.BackgroundColor3 = COLORS.ButtonHover
+
+        Stroke.Color = COLORS.Purple
+
+        Stroke.Transparency = 0
+
+    end)
+
+
+    Button.MouseLeave:Connect(function()
+
+        Button.BackgroundColor3 = COLORS.Button
+
+        Stroke.Color = COLORS.PurpleDark
+
+        Stroke.Transparency = 0.3
+
+    end)
+
+
+    --// =====================================
+    --// EJECUTAR
+    --// =====================================
+
     Button.MouseButton1Click:Connect(function()
 
-        Button.Text = "⏳  Cargando..."
+        Name.Text = "Loading..."
+
+        Name.TextColor3 = COLORS.PurpleLight
+
 
         task.spawn(function()
 
             local success = loadScript(data.url)
 
+
             if success then
-                Button.Text = "✓  " .. data.name
+
+                Name.Text = "✓  " .. data.name
+
+                Name.TextColor3 = COLORS.Success
 
                 task.wait(1)
 
-                Button.Text = "▶  " .. data.name
+                Name.Text = data.name
+
+                Name.TextColor3 = COLORS.Text
+
             else
-                Button.Text = "✕  Error"
+
+                Name.Text = "!  Execution error"
+
+                Name.TextColor3 = COLORS.Error
 
                 task.wait(2)
 
-                Button.Text = "▶  " .. data.name
+                Name.Text = data.name
+
+                Name.TextColor3 = COLORS.Text
+
             end
 
         end)
@@ -281,64 +719,124 @@ for index, data in ipairs(scripts) do
 end
 
 
---// Actualizar tamaño del Scroll
-local function updateCanvas()
+--// =========================================
+--// ACTUALIZAR SCROLL
+--// =========================================
+
+local function UpdateCanvas()
+
     Scroll.CanvasSize = UDim2.new(
+
         0,
         0,
         0,
-        Layout.AbsoluteContentSize.Y + 15
+        Layout.AbsoluteContentSize.Y + 20
+
     )
+
 end
 
-Layout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(updateCanvas)
 
-updateCanvas()
+Layout:GetPropertyChangedSignal(
+    "AbsoluteContentSize"
+):Connect(UpdateCanvas)
+
+UpdateCanvas()
 
 
 --// =========================================
---// MINIMIZAR
+--// BOTÓN MINIMIZADO 👁️
 --// =========================================
 
-local minimized = false
+local OpenButton = Instance.new("ImageButton")
 
-Minimize.MouseButton1Click:Connect(function()
+OpenButton.Name = "OpenMenu"
 
-    minimized = not minimized
+OpenButton.Size = UDim2.new(
+    0,
+    58,
+    0,
+    58
+)
 
-    if minimized then
-        Scroll.Visible = false
+OpenButton.Position = UDim2.new(
+    0.5,
+    -29,
+    0.5,
+    -29
+)
 
-        Main.Size = UDim2.new(0, 300, 0, 40)
+OpenButton.BackgroundColor3 = COLORS.Background2
 
-        Minimize.Text = "+"
-    else
-        Scroll.Visible = true
+OpenButton.BorderSizePixel = 0
 
-        Main.Size = UDim2.new(0, 300, 0, 400)
+OpenButton.Image = MENU_ICONS.Open
 
-        Minimize.Text = "—"
-    end
+OpenButton.ScaleType = Enum.ScaleType.Fit
+
+OpenButton.Visible = false
+
+OpenButton.AutoButtonColor = false
+
+OpenButton.Parent = ScreenGui
+
+
+--// BORDE DEL BOTÓN
+
+local OpenStroke = Instance.new("UIStroke")
+
+OpenStroke.Thickness = 2
+
+OpenStroke.Color = COLORS.Purple
+
+OpenStroke.Transparency = 0.1
+
+OpenStroke.Parent = OpenButton
+
+
+--// REDONDEADO
+
+local OpenCorner = Instance.new("UICorner")
+
+OpenCorner.CornerRadius = UDim.new(
+    0,
+    18
+)
+
+OpenCorner.Parent = OpenButton
+
+
+--// =========================================
+--// HOVER OJO
+--// =========================================
+
+OpenButton.MouseEnter:Connect(function()
+
+    OpenButton.BackgroundColor3 = COLORS.ButtonHover
+
+    OpenStroke.Color = COLORS.PurpleLight
+
+end)
+
+
+OpenButton.MouseLeave:Connect(function()
+
+    OpenButton.BackgroundColor3 = COLORS.Background2
+
+    OpenStroke.Color = COLORS.Purple
 
 end)
 
 
 --// =========================================
---// CERRAR
+--// DRAG DEL MENÚ NORMAL
 --// =========================================
 
-Close.MouseButton1Click:Connect(function()
-    ScreenGui:Destroy()
-end)
+local draggingMain = false
 
+local dragStartMain
 
---// =========================================
---// DRAG / MOVER VENTANA
---// =========================================
-
-local dragging = false
-local dragStart
-local startPosition
+local startPositionMain
 
 
 TopBar.InputBegan:Connect(function(input)
@@ -346,10 +844,11 @@ TopBar.InputBegan:Connect(function(input)
     if input.UserInputType == Enum.UserInputType.MouseButton1
         or input.UserInputType == Enum.UserInputType.Touch then
 
-        dragging = true
+        draggingMain = true
 
-        dragStart = input.Position
-        startPosition = Main.Position
+        dragStartMain = input.Position
+
+        startPositionMain = Main.Position
 
     end
 
@@ -361,7 +860,7 @@ TopBar.InputEnded:Connect(function(input)
     if input.UserInputType == Enum.UserInputType.MouseButton1
         or input.UserInputType == Enum.UserInputType.Touch then
 
-        dragging = false
+        draggingMain = false
 
     end
 
@@ -370,20 +869,25 @@ end)
 
 UserInputService.InputChanged:Connect(function(input)
 
-    if not dragging then
+    if not draggingMain then
         return
     end
 
     if input.UserInputType == Enum.UserInputType.MouseMovement
         or input.UserInputType == Enum.UserInputType.Touch then
 
-        local delta = input.Position - dragStart
+        local delta = input.Position - dragStartMain
 
         Main.Position = UDim2.new(
-            startPosition.X.Scale,
-            startPosition.X.Offset + delta.X,
-            startPosition.Y.Scale,
-            startPosition.Y.Offset + delta.Y
+
+            startPositionMain.X.Scale,
+
+            startPositionMain.X.Offset + delta.X,
+
+            startPositionMain.Y.Scale,
+
+            startPositionMain.Y.Offset + delta.Y
+
         )
 
     end
@@ -391,4 +895,147 @@ UserInputService.InputChanged:Connect(function(input)
 end)
 
 
-print("[+] Multi Script Loader GUI iniciado")
+--// =========================================
+--// DRAG DEL OJO MINIMIZADO
+--// =========================================
+
+local draggingOpen = false
+
+local dragStartOpen
+
+local startPositionOpen
+
+
+OpenButton.InputBegan:Connect(function(input)
+
+    if input.UserInputType == Enum.UserInputType.MouseButton1
+        or input.UserInputType == Enum.UserInputType.Touch then
+
+        draggingOpen = true
+
+        dragStartOpen = input.Position
+
+        startPositionOpen = OpenButton.Position
+
+    end
+
+end)
+
+
+OpenButton.InputEnded:Connect(function(input)
+
+    if input.UserInputType == Enum.UserInputType.MouseButton1
+        or input.UserInputType == Enum.UserInputType.Touch then
+
+        draggingOpen = false
+
+    end
+
+end)
+
+
+UserInputService.InputChanged:Connect(function(input)
+
+    if not draggingOpen then
+        return
+    end
+
+    if input.UserInputType == Enum.UserInputType.MouseMovement
+        or input.UserInputType == Enum.UserInputType.Touch then
+
+        local delta = input.Position - dragStartOpen
+
+        OpenButton.Position = UDim2.new(
+
+            startPositionOpen.X.Scale,
+
+            startPositionOpen.X.Offset + delta.X,
+
+            startPositionOpen.Y.Scale,
+
+            startPositionOpen.Y.Offset + delta.Y
+
+        )
+
+    end
+
+end)
+
+
+--// =========================================
+--// MINIMIZAR
+--// =========================================
+
+local minimized = false
+
+
+Minimize.MouseButton1Click:Connect(function()
+
+    minimized = true
+
+    --// Guardar posición actual del menú
+    --// para colocar el ojo exactamente ahí.
+
+    OpenButton.Position = UDim2.new(
+
+        Main.Position.X.Scale,
+
+        Main.Position.X.Offset + (Main.AbsoluteSize.X / 2) - 29,
+
+        Main.Position.Y.Scale,
+
+        Main.Position.Y.Offset + (Main.AbsoluteSize.Y / 2) - 29
+
+    )
+
+
+    Main.Visible = false
+
+    OpenButton.Visible = true
+
+end)
+
+
+--// =========================================
+--// ABRIR DESDE EL OJO
+--// =========================================
+
+OpenButton.MouseButton1Click:Connect(function()
+
+    minimized = false
+
+
+    --// Colocar el menú alrededor
+    --// de la posición del ojo.
+
+    Main.Position = UDim2.new(
+
+        OpenButton.Position.X.Scale,
+
+        OpenButton.Position.X.Offset + 29 - 160,
+
+        OpenButton.Position.Y.Scale,
+
+        OpenButton.Position.Y.Offset + 29 - 200
+
+    )
+
+
+    Main.Visible = true
+
+    OpenButton.Visible = false
+
+end)
+
+
+--// =========================================
+--// FINAL
+--// =========================================
+
+print("[+] Purple Multi Script Loader iniciado")
+
+print("[+] Roblox Logo:", MENU_ICONS.Main)
+
+print("[+] Open Icon:", MENU_ICONS.Open)
+
+print("[+] Button Icon:", MENU_ICONS.Button)
