@@ -88,9 +88,20 @@ local scripts = {
     },
 
     {
-        name = "",
+        name = "TpTool",
         url = "https://rawscripts.net/raw/Universal-Script-Tptool-107347"
     },
+
+    {
+        name = "NoKey",
+        url = "https://raw.githubusercontent.com/Efe0626/RaitoHub/main/Script"
+    },
+
+    {
+        name = "Grow a Garden",
+        url = "https://raw.githubusercontent.com/OPScriptsRoblox/Scripts/refs/heads/main/GrowAGarden"
+    },
+
 
     --// =====================================
     --// SCRIPTS ADICIONALES
